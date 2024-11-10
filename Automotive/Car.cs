@@ -1,4 +1,6 @@
-﻿namespace Automotive;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace Automotive;
 
 public class Car
 {
@@ -8,6 +10,7 @@ public class Car
     private double _fuelConsumption;
     private double _fuelLevel;
     private double _odometer;
+    private double _dailyOdometer;
 
     public Car(string brand, string model, int tankCapacity, double fuelConsumption)
     {
@@ -36,13 +39,20 @@ public class Car
         if (maximumDistance > distance)
         {
             _odometer += distance;
+            if (_odometer > 999999) _odometer = _odometer - 999999;
+            _dailyOdometer += distance;
+            if (_dailyOdometer > 999.9) _dailyOdometer = _dailyOdometer - 999.9;
             _fuelLevel -= _fuelConsumption * distance / 100;
         }
         else
         {
             _odometer += maximumDistance;
+            if (_odometer > 999999) _odometer = _odometer - 999999;
+            _dailyOdometer += maximumDistance;
+            if (_dailyOdometer > 999.9) _dailyOdometer = _dailyOdometer - 999.9;
             _fuelLevel = 0;
         }
+        _dailyOdometer = Math.Round(_dailyOdometer, 1);
     }
 
     public void Tank(double amount)
@@ -55,6 +65,17 @@ public class Car
         if (_fuelLevel > _tankCapacity)
             _fuelLevel = _tankCapacity;
     }
+    public void Reset()
+    {
+        _dailyOdometer = 0;
+        _dailyOdometer = Math.Round(_dailyOdometer, 1);
+    }
+
+    //for an experiment with the limit
+    public void Max()
+    {
+        _odometer = 999900;
+    }
 
     public string Brand => _brand;
     public string Model => _model;
@@ -63,4 +84,5 @@ public class Car
 
     public int FuelLevel => (int)_fuelLevel;
     public int Odometer => (int)_odometer;
+    public double DailyOdometer => (double)_dailyOdometer;
 }
